@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="About | Sawhorse" bodyScroll={true}>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <div class="about">
+
+    <blockquote>
+      "Made by hand, shaped by the wood."
+    </blockquote>
+
+    <section>
+      <h2>About</h2>
+      <p>
+        Sawhorse makes furniture by hand in London. Each piece is carved, cut, and finished in the studio — no shortcuts, no production lines. Just tools, time, and wood.
+      </p>
+      <p>
+        We work almost exclusively with British hardwoods: oak, ash, elm, and others sourced from managed woodlands and urban felled trees across the UK. The grain, the knots, the colour — these aren't flaws to be engineered out. They're what makes each piece its own thing.
+      </p>
+      <p>
+        The charring you'll see on much of the work is shou sugi ban — a traditional Japanese technique that hardens and preserves the surface. It also does something to the wood that nothing else quite replicates: it brings out the grain, deepens the colour, and gives the piece a weight that feels ancient and new at the same time.
+      </p>
+    </section>
+
+    <section>
+      <h2>The Work</h2>
+      <p>
+        Everything starts with the material. Before a design, before a sketch — the wood is already telling you something. The job is to listen.
+      </p>
+      <p>
+        The pieces are simple on purpose. A stool. A bench. Forms that have existed for centuries, refined down to what they need to be and nothing more. The making is where the complexity lives — in the joinery, the surface work, the decisions that don't show up in a photograph but you feel when you sit down.
+      </p>
+      <p>
+        Each piece is made one at a time, by hand, in London.
+      </p>
+    </section>
+
+    <section class="contact">
+      <h2>Contact</h2>
+      <p>
+        For enquiries, commissions, or to discuss a piece, get in touch at <a href="mailto:julian@studiosawhorse.com">julian@studiosawhorse.com</a>
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .about {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    background: #fff;
+    min-height: 100vh;
+  }
+
+  blockquote {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 21px;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.5;
+    color: #333;
+    text-align: center;
+    margin: 5rem 0;
+    padding: 0 1rem;
+  }
+
+  section {
+    margin-bottom: 5rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 21px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 1rem;
+  }
+
+  p {
+    font-family: 'Lato', system-ui, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #333;
+    margin: 0 0 1rem;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  .contact a {
+    color: #333;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .contact a:hover {
+    color: #dca26d;
+  }
+
+  @media (max-width: 767px) {
+    .about {
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    blockquote {
+      font-size: 18px;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<script>
+  const sections = document.querySelectorAll('section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  sections.forEach(section => observer.observe(section));
+</script>

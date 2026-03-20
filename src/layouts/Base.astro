@@ -1,0 +1,274 @@
+---
+interface Props {
+  title?: string;
+  fullBleed?: boolean;
+  bodyScroll?: boolean;
+}
+
+const { title = 'Julian Emsley', fullBleed = false, bodyScroll = false } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+const isActive = (path: string) => {
+  if (path === '/') return currentPath === '/' || currentPath.startsWith('/furniture');
+  return currentPath.startsWith(path);
+};
+---
+
+<html lang="en" class={bodyScroll ? 'body-scroll' : ''}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap" rel="stylesheet">
+    <title>{title}</title>
+  </head>
+  <body>
+
+    <!-- Mobile: persistent top nav bar -->
+    <nav class="mobile-nav-bar">
+      <a href="/" class="nav-logo">
+        <img src="/images/logo.png" alt="Sawhorse" />
+      </a>
+      <div class="nav-main-row">
+        <a href="/about" class={`nav-link${isActive('/about') ? ' active' : ''}`}>About</a>
+        <a href="mailto:julian@studiosawhorse.com" class="nav-link">Email</a>
+      </div>
+    </nav>
+
+    <!-- Desktop: sidebar (fixed, always on top) -->
+    <aside class="sidebar">
+      <a href="/" class="logo">
+        <img src="/images/logo.png" alt="Sawhorse" />
+      </a>
+      <nav class="sidebar-nav">
+        <a href="/" class={isActive('/') ? 'active' : ''}>Furniture</a>
+        <a href="/about" class={isActive('/about') ? 'active' : ''}>About</a>
+        <a href="mailto:julian@studiosawhorse.com">Email</a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="mailto:julian@studiosawhorse.com" class="sidebar-ig">julian@studiosawhorse.com</a>
+        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="sidebar-ig">@studiosawhorse</a>
+      </div>
+    </aside>
+
+    <main class={fullBleed ? 'full-bleed' : ''}>
+      <slot />
+    </main>
+
+  </body>
+</html>
+
+<script>
+  const workBtn = document.getElementById('nav-work-btn');
+  const subRow  = document.getElementById('nav-sub-row');
+
+  workBtn?.addEventListener('click', () => {
+    const isOpen = subRow?.classList.contains('open');
+    if (isOpen) {
+      subRow?.classList.remove('open');
+      workBtn.classList.remove('active');
+      workBtn.setAttribute('aria-expanded', 'false');
+      subRow?.setAttribute('aria-hidden', 'true');
+    } else {
+      subRow?.classList.add('open');
+      workBtn.classList.add('active');
+      workBtn.setAttribute('aria-expanded', 'true');
+      subRow?.setAttribute('aria-hidden', 'false');
+    }
+  });
+
+</script>
+
+<style is:global>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: system-ui, sans-serif;
+    background: #fff;
+    color: #222;
+  }
+
+  /* ── Logo ── */
+  .logo { display: block; }
+  .logo img { height: 140px; width: auto; display: block; }
+
+  /* ── Shared ── */
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: #aaa;
+    text-transform: uppercase;
+  }
+
+  /* ═══════════════════════════════
+     MOBILE
+  ═══════════════════════════════ */
+
+  @media (max-width: 767px) {
+    /* Lock viewport — no page scroll */
+    html, body { height: 100svh; overflow: hidden; }
+    body { display: flex; flex-direction: column; }
+
+    /* Nav bar: always visible, sits above content in flex stack */
+    .mobile-nav-bar {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      background: #fff;
+      padding: 1.25rem 1.25rem 0;
+      z-index: 20;
+    }
+
+    .nav-logo img {
+      height: 90px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-main-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-work-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      color: #999;
+      transition: color 0.2s ease;
+    }
+    .nav-work-btn:hover, .nav-work-btn.active { color: #dca26d; }
+
+    .nav-link {
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      color: #999;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover { color: #000; }
+    .nav-link.active { color: #dca26d; }
+
+    /* Sub-row: slides in below main nav row */
+    .nav-sub-row {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .nav-sub-row.open {
+      max-height: 3rem;
+      padding: 0.5rem 0 0.75rem;
+    }
+
+    .sub-link {
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      color: #999;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .sub-link:hover { color: #000; }
+    .sub-link.active { color: #dca26d; }
+
+    /* Main: flex child fills remaining viewport height */
+    main {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+    main:not(.full-bleed) {
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    main.full-bleed {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Desktop sidebar hidden on mobile */
+    .sidebar { display: none; }
+  }
+
+  /* About page (and any bodyScroll page): allow normal document scroll so Safari hides its UI on scroll */
+  @media (max-width: 767px) {
+    html.body-scroll,
+    html.body-scroll body {
+      height: auto;
+      overflow: visible;
+    }
+    html.body-scroll .mobile-nav-bar {
+      position: sticky;
+      top: 0;
+    }
+    html.body-scroll main,
+    html.body-scroll main:not(.full-bleed) {
+      flex: none;
+      overflow: visible;
+      padding: 0;
+    }
+  }
+
+  /* Hide mobile elements at desktop widths */
+  @media (min-width: 768px) {
+    .mobile-nav-bar { display: none; }
+  }
+
+  /* ═══════════════════════════════
+     DESKTOP
+  ═══════════════════════════════ */
+  @media (min-width: 768px) {
+    /* Sidebar: fixed, transparent, always on top */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+      position: fixed;
+      top: 0; left: 0;
+      width: 220px;
+      height: 100vh;
+      padding: 2.5rem 2rem;
+      z-index: 10;
+    }
+
+    .sidebar-nav { display: flex; flex-direction: column; gap: 2.5rem; }
+    .sidebar-nav a { text-decoration: none; color: #999999; font-family: 'Lato', sans-serif; font-size: 14px; transition: color 0.2s ease; }
+    .sidebar-nav a.active { color: #dca26d; }
+    .sidebar-nav a:hover:not(.active) { color: #000; }
+
+    .sidebar-footer { position: absolute; bottom: 2.5rem; left: 2rem; font-size: 0.75rem; color: #999; display: flex; flex-direction: column; gap: 0.3rem; }
+    .sidebar-ig { color: #999; text-decoration: none; transition: color 0.2s ease; }
+    .sidebar-ig:hover { color: #000; }
+
+    /* Regular pages: push content right of sidebar */
+    main {
+      margin-left: 220px;
+      padding: 2.5rem;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    /* Gallery pages: fill full viewport */
+    main.full-bleed {
+      margin-left: 0;
+      padding: 0;
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+    }
+  }
+
+</style>

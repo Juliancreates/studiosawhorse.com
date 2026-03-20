@@ -1,0 +1,146 @@
+---
+import { Image } from 'astro:assets';
+import type { Piece } from '../data/furniture';
+
+interface Props {
+  pieces: Piece[];
+  section: string;
+}
+
+const { pieces, section } = Astro.props;
+---
+
+<div class="gallery">
+  {pieces.map((piece) => {
+    const img = piece.images[0].src;
+    const aspect = img.width / img.height;
+    return (
+    <figure style={`--aspect: ${aspect};`}>
+      <a href={`/${section}/${piece.slug}`} class="gallery-link">
+        <Image
+          src={img}
+          alt={piece.images[0].alt}
+          width={1400}
+          quality={88}
+          loading="lazy"
+          decoding="async"
+          class="gallery-img"
+        />
+      </a>
+      <figcaption>
+        <p class="fig-title">{piece.title}</p>
+        <p class="fig-meta">{piece.medium} · {piece.year}</p>
+        <p class="fig-dims">{piece.dimensions}</p>
+        {piece.price && <p class="fig-price">{piece.price}</p>}
+      </figcaption>
+    </figure>
+    );
+  })}
+</div>
+
+<style>
+  .gallery {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 100svh;
+    padding: 0.75rem 1rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gallery::-webkit-scrollbar {
+    display: none;
+  }
+
+  figure {
+    flex: none;
+    /* Width = (gallery height - vertical padding - caption area) × aspect ratio */
+    width: calc((100svh - 1.5rem - 4.5rem) * var(--aspect));
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .gallery-link {
+    display: block;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .gallery-link img {
+    height: 100%;
+    width: auto;
+    display: block;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .gallery-img { cursor: pointer; }
+
+  figcaption {
+    flex-shrink: 0;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .fig-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  .fig-meta {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: #999;
+  }
+
+  .fig-dims {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: #bbb;
+  }
+
+  .fig-price {
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #999;
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 767px) {
+    .gallery {
+      height: 100%;
+      min-height: 0;
+      padding: 0.75rem 1rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .gallery {
+      height: 100vh;
+      padding: 0.75rem 1rem 4rem 300px;
+    }
+    figure {
+      width: calc((100vh - 4.75rem - 4.5rem) * var(--aspect));
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLImageElement>('.gallery-img').forEach((img) => {
+    if (img.complete) {
+      img.style.opacity = '1';
+    } else {
+      img.addEventListener('load', () => { img.style.opacity = '1'; });
+    }
+  });
+</script>
