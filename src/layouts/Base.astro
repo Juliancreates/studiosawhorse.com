@@ -28,30 +28,37 @@ const isActive = (path: string) => {
 
     <!-- Mobile: persistent top nav bar -->
     <nav class="mobile-nav-bar">
+      <div class="mobile-menu">
+        <button class="mobile-menu-label" id="mobile-menu-btn" aria-expanded="false">Menu</button>
+        <div class="mobile-dropdown" id="mobile-dropdown" aria-hidden="true">
+          <a href="/" class={`mobile-drop-link${isActive('/') ? ' active' : ''}`}>Furniture</a>
+          <a href="/about" class={`mobile-drop-link${isActive('/about') ? ' active' : ''}`}>About</a>
+        </div>
+      </div>
       <a href="/" class="nav-logo">
         <img src="/images/logo.png" alt="Sawhorse" />
       </a>
-      <div class="nav-main-row">
-        <a href="/about" class={`nav-link${isActive('/about') ? ' active' : ''}`}>About</a>
-        <a href="mailto:julian@studiosawhorse.com" class="nav-link">Email</a>
+      <div class="mobile-nav-right">
+        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="nav-link">@studiosawhorse</a>
       </div>
     </nav>
 
-    <!-- Desktop: sidebar (fixed, always on top) -->
-    <aside class="sidebar">
+    <!-- Desktop: top nav bar -->
+    <header class="topbar">
+      <div class="topbar-menu">
+        <span class="menu-label">Menu</span>
+        <nav class="dropdown">
+          <a href="/" class={isActive('/') ? 'active' : ''}>Furniture</a>
+          <a href="/about" class={isActive('/about') ? 'active' : ''}>About</a>
+        </nav>
+      </div>
       <a href="/" class="logo">
         <img src="/images/logo.png" alt="Sawhorse" />
       </a>
-      <nav class="sidebar-nav">
-        <a href="/" class={isActive('/') ? 'active' : ''}>Furniture</a>
-        <a href="/about" class={isActive('/about') ? 'active' : ''}>About</a>
-        <a href="mailto:julian@studiosawhorse.com">Email</a>
-      </nav>
-      <div class="sidebar-footer">
-        <a href="mailto:julian@studiosawhorse.com" class="sidebar-ig">julian@studiosawhorse.com</a>
-        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="sidebar-ig">@studiosawhorse</a>
+      <div class="topbar-right">
+        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="topbar-ig">@studiosawhorse</a>
       </div>
-    </aside>
+    </header>
 
     <main class={fullBleed ? 'full-bleed' : ''}>
       <slot />
@@ -61,24 +68,26 @@ const isActive = (path: string) => {
 </html>
 
 <script>
-  const workBtn = document.getElementById('nav-work-btn');
-  const subRow  = document.getElementById('nav-sub-row');
+  const btn      = document.getElementById('mobile-menu-btn');
+  const dropdown = document.getElementById('mobile-dropdown');
 
-  workBtn?.addEventListener('click', () => {
-    const isOpen = subRow?.classList.contains('open');
-    if (isOpen) {
-      subRow?.classList.remove('open');
-      workBtn.classList.remove('active');
-      workBtn.setAttribute('aria-expanded', 'false');
-      subRow?.setAttribute('aria-hidden', 'true');
-    } else {
-      subRow?.classList.add('open');
-      workBtn.classList.add('active');
-      workBtn.setAttribute('aria-expanded', 'true');
-      subRow?.setAttribute('aria-hidden', 'false');
-    }
+  btn?.addEventListener('click', () => {
+    const isOpen = dropdown?.classList.contains('open');
+    dropdown?.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    dropdown?.setAttribute('aria-hidden', String(isOpen));
   });
 
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!btn?.contains(e.target as Node) && !dropdown?.contains(e.target as Node)) {
+      dropdown?.classList.remove('open');
+      btn?.classList.remove('open');
+      btn?.setAttribute('aria-expanded', 'false');
+      dropdown?.setAttribute('aria-hidden', 'true');
+    }
+  });
 </script>
 
 <style is:global>
@@ -92,7 +101,7 @@ const isActive = (path: string) => {
 
   /* ── Logo ── */
   .logo { display: block; }
-  .logo img { height: 110px; width: auto; display: block; }
+  .logo img { width: auto; display: block; }
 
   /* ── Shared ── */
   .section-label {
@@ -114,12 +123,11 @@ const isActive = (path: string) => {
     /* Nav bar: always visible, sits above content in flex stack */
     .mobile-nav-bar {
       flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 0.75rem;
       background: #fff;
-      padding: 1.25rem 1.25rem 0;
+      padding: 0.75rem 1.25rem;
       z-index: 20;
     }
 
@@ -129,14 +137,9 @@ const isActive = (path: string) => {
       display: block;
     }
 
-    .nav-main-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 2rem;
-    }
+    .mobile-menu { position: relative; }
 
-    .nav-work-btn {
+    .mobile-menu-label {
       background: none;
       border: none;
       padding: 0;
@@ -144,43 +147,55 @@ const isActive = (path: string) => {
       font-family: 'Lato', sans-serif;
       font-size: 14px;
       color: #999;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       transition: color 0.2s ease;
     }
-    .nav-work-btn:hover, .nav-work-btn.active { color: #dca26d; }
+    .mobile-menu-label.open { color: #000; }
+
+    .mobile-dropdown {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      left: 0;
+      background: #fff;
+      padding: 0.75rem 1.25rem;
+      min-width: 120px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 30;
+    }
+    .mobile-dropdown.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .mobile-drop-link {
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      color: #999;
+      text-decoration: none;
+      padding: 0.4rem 0;
+      transition: color 0.2s ease;
+    }
+    .mobile-drop-link.active { color: #dca26d; }
+    .mobile-drop-link:hover:not(.active) { color: #000; }
+
+    .mobile-nav-right { display: flex; justify-content: flex-end; }
 
     .nav-link {
       font-family: 'Lato', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       color: #999;
       text-decoration: none;
       transition: color 0.2s ease;
     }
     .nav-link:hover { color: #000; }
     .nav-link.active { color: #dca26d; }
-
-    /* Sub-row: slides in below main nav row */
-    .nav-sub-row {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-    }
-    .nav-sub-row.open {
-      max-height: 3rem;
-      padding: 0.5rem 0 0.75rem;
-    }
-
-    .sub-link {
-      font-family: 'Lato', sans-serif;
-      font-size: 14px;
-      color: #999;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-    .sub-link:hover { color: #000; }
-    .sub-link.active { color: #dca26d; }
 
     /* Main: flex child fills remaining viewport height */
     main {
@@ -199,8 +214,8 @@ const isActive = (path: string) => {
       overflow: hidden;
     }
 
-    /* Desktop sidebar hidden on mobile */
-    .sidebar { display: none; }
+    /* Desktop topbar hidden on mobile */
+    .topbar { display: none; }
   }
 
   /* About page (and any bodyScroll page): allow normal document scroll so Safari hides its UI on scroll */
@@ -213,6 +228,7 @@ const isActive = (path: string) => {
     html.body-scroll .mobile-nav-bar {
       position: sticky;
       top: 0;
+      z-index: 20;
     }
     html.body-scroll main,
     html.body-scroll main:not(.full-bleed) {
@@ -231,40 +247,89 @@ const isActive = (path: string) => {
      DESKTOP
   ═══════════════════════════════ */
   @media (min-width: 768px) {
-    /* Sidebar: fixed, transparent, always on top */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
+    /* Top nav bar: fixed across the top */
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
       position: fixed;
-      top: 0; left: 0;
-      width: 220px;
-      height: 100vh;
-      padding: 2.5rem 2rem;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      padding: 0 2.5rem;
+      background: #fff;
       z-index: 10;
     }
 
-    .sidebar-nav { display: flex; flex-direction: column; gap: 2.5rem; }
-    .sidebar-nav a { text-decoration: none; color: #999999; font-family: 'Lato', sans-serif; font-size: 14px; transition: color 0.2s ease; }
-    .sidebar-nav a.active { color: #dca26d; }
-    .sidebar-nav a:hover:not(.active) { color: #000; }
+    .topbar .logo { justify-self: center; }
+    .topbar .logo img { height: 80px; }
 
-    .sidebar-footer { position: absolute; bottom: 2.5rem; left: 2rem; font-size: 0.75rem; color: #999; display: flex; flex-direction: column; gap: 0.3rem; }
-    .sidebar-ig { color: #999; text-decoration: none; transition: color 0.2s ease; }
-    .sidebar-ig:hover { color: #000; }
+    .topbar-menu {
+      position: relative;
+      display: inline-block;
+    }
 
-    /* Regular pages: push content right of sidebar */
+    .menu-label {
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      color: #999;
+      cursor: default;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+
+    .topbar-menu:hover .menu-label { color: #000; }
+
+    .dropdown {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      padding: 0.75rem 1.25rem;
+      min-width: 120px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .topbar-menu:hover .dropdown {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .dropdown a {
+      text-decoration: none;
+      color: #999;
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      padding: 0.4rem 0;
+      transition: color 0.2s ease;
+    }
+    .dropdown a.active { color: #dca26d; }
+    .dropdown a:hover:not(.active) { color: #000; }
+
+    .topbar-right { display: flex; justify-content: flex-end; }
+    .topbar-ig { color: #999; text-decoration: none; font-family: 'Lato', sans-serif; font-size: 13px; transition: color 0.2s ease; }
+    .topbar-ig:hover { color: #000; }
+
+    /* Regular pages: push content below topbar */
     main {
-      margin-left: 220px;
+      margin-left: 0;
       padding: 2.5rem;
+      padding-top: calc(60px + 2.5rem);
       min-height: 100vh;
       overflow-y: auto;
     }
 
     /* Gallery pages: fill full viewport */
     main.full-bleed {
-      margin-left: 0;
       padding: 0;
+      padding-top: 60px;
       position: fixed;
       inset: 0;
       overflow: hidden;
