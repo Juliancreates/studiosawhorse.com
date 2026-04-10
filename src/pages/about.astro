@@ -7,6 +7,10 @@ import Base from '../layouts/Base.astro';
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <div class="about">
 
+    <div class="about-photo">
+      <img src="/images/about.png" alt="Julian Emsley at work" />
+    </div>
+
     <blockquote>
       "Made by hand, shaped by the wood."
     </blockquote>
@@ -51,8 +55,32 @@ import Base from '../layouts/Base.astro';
     max-width: 640px;
     margin: 0 auto;
     padding: 2rem 1.5rem 4rem;
-    background: #fff;
+    background: transparent;
     min-height: 100vh;
+    position: relative;
+  }
+
+  .about::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='8' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23grain)' opacity='0.1'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  .about-photo {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0 0;
+  }
+
+  .about-photo img {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 50%;
   }
 
   blockquote {
