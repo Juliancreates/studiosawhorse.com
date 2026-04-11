@@ -7,7 +7,8 @@ import { furniture } from '../data/furniture';
 <Base title="Sawhorse" fullBleed={true}>
   <div class="splash" id="splash">
     <img src="/images/logo.png" alt="Sawhorse" class="splash-logo" />
-    <p class="splash-text">"aggressively human"</p>
+    <p class="splash-text">"this is just a test"</p>
+    <p class="splash-subtext">Launching autumn 2026</p>
   </div>
   <Gallery pieces={furniture} section="furniture" />
 </Base>
@@ -61,6 +62,19 @@ import { furniture } from '../data/furniture';
     letter-spacing: 0.08em;
     opacity: 0;
     animation: fadeIn 3s ease 0.5s forwards;
+  }
+
+  .splash-subtext {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0;
+    animation: fadeIn 3s ease 1s forwards;
+    position: absolute;
+    bottom: 15%;
   }
 
   @keyframes fadeIn {
