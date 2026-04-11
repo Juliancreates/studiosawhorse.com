@@ -69,8 +69,8 @@ const { pieces, section } = Astro.props;
 
   figure {
     flex: none;
-    /* Width = (gallery height - vertical padding - caption area) × aspect ratio */
-    width: calc((100svh - 1.5rem - 4.5rem) * var(--aspect));
+    /* Width = assumed image height × aspect ratio */
+    width: calc((100svh - 7.5rem) * var(--aspect));
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -78,8 +78,7 @@ const { pieces, section } = Astro.props;
 
   .gallery-link {
     display: block;
-    flex: 1;
-    min-height: 0;
+    height: calc(100svh - 7.5rem);
   }
 
   .gallery-link img {
@@ -100,6 +99,7 @@ const { pieces, section } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+    text-align: right;
   }
 
   .fig-title {
@@ -133,9 +133,16 @@ const { pieces, section } = Astro.props;
 
   @media (max-width: 767px) {
     .gallery {
-      height: 100%;
+      height: 70%;
       min-height: 0;
       padding: 0.75rem 1rem;
+      margin: auto 0;
+    }
+    figure {
+      width: calc((70svh - 7.5rem) * var(--aspect));
+    }
+    .gallery-link {
+      height: calc(70svh - 7.5rem);
     }
   }
 
@@ -145,7 +152,10 @@ const { pieces, section } = Astro.props;
       padding: 0.75rem 1rem;
     }
     figure {
-      width: calc((100vh - 90px - 1.5rem - 1.5rem - 4.5rem) * var(--aspect));
+      width: calc((100vh - 90px - 9rem) * var(--aspect));
+    }
+    .gallery-link {
+      height: calc(100vh - 90px - 9rem);
     }
   }
 </style>

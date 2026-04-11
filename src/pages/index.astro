@@ -70,9 +70,17 @@ import { furniture } from '../data/furniture';
 
 <script>
   const splash = document.getElementById('splash');
-  if (splash) document.body.appendChild(splash);
-  setTimeout(() => {
-    splash?.classList.add('hidden');
-    setTimeout(() => splash?.remove(), 3000);
-  }, 5000);
+  if (splash) {
+    const seen = sessionStorage.getItem('intro-seen');
+    if (seen) {
+      splash.remove();
+    } else {
+      sessionStorage.setItem('intro-seen', '1');
+      document.body.appendChild(splash);
+      setTimeout(() => {
+        splash.classList.add('hidden');
+        setTimeout(() => splash.remove(), 3000);
+      }, 5000);
+    }
+  }
 </script>
