@@ -39,7 +39,7 @@ const isActive = (path: string) => {
         <img src="/images/logo.png" alt="Sawhorse" />
       </a>
       <div class="mobile-nav-right">
-        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="nav-link">@studiosawhorse</a>
+        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="nav-link">SAWHORSE</a>
       </div>
     </nav>
 
@@ -56,13 +56,18 @@ const isActive = (path: string) => {
         <img src="/images/logo.png" alt="Sawhorse" />
       </a>
       <div class="topbar-right">
-        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="topbar-ig">@studiosawhorse</a>
+        <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="topbar-ig">SAWHORSE</a>
       </div>
     </header>
 
     <main class={fullBleed ? 'full-bleed' : ''}>
       <slot />
     </main>
+
+    <footer>
+      <a href="mailto:julian@studiosawhorse.com" class="footer-email">julian@studiosawhorse.com</a>
+      <a href="https://instagram.com/studiosawhorse" target="_blank" rel="noopener" class="footer-ig">@studiosawhorse</a>
+    </footer>
 
   </body>
 </html>
@@ -220,6 +225,28 @@ const isActive = (path: string) => {
 
     /* Desktop topbar hidden on mobile */
     .topbar { display: none; }
+
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.25rem;
+      height: 40px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .footer-email,
+    .footer-ig {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      color: #c0392b;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      pointer-events: auto;
+    }
   }
 
   /* About page (and any bodyScroll page): allow normal document scroll so Safari hides its UI on scroll */
@@ -319,6 +346,31 @@ const isActive = (path: string) => {
     .topbar-right { display: flex; justify-content: flex-end; }
     .topbar-ig { color: #c0392b; text-decoration: none; font-family: 'Josefin Sans', sans-serif; font-size: 13px; transition: color 0.2s ease; }
     .topbar-ig:hover { color: #2a1f0e; }
+
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem;
+      height: 44px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .footer-email,
+    .footer-ig {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 12px;
+      color: #c0392b;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s ease;
+      pointer-events: auto;
+    }
+    .footer-email:hover,
+    .footer-ig:hover { color: #2a1f0e; }
 
     /* Regular pages: push content below topbar */
     main {
